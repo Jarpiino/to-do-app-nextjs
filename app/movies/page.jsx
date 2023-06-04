@@ -6,7 +6,7 @@ async function fetchMovies() {
 
   return movies;
 }
-
+// s
 export default async function Home() {
   const movies = await fetchMovies();
   return (
