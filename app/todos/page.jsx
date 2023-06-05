@@ -9,11 +9,12 @@ async function fetchTodos() {
 
 export default async function Home() {
   const todos = await fetchTodos();
+  console.log(todos);
   return (
     <div>
       <ul>
         {todos.map((todo) => (
-          <li key={todo._id}>{todo.todo}</li>
+          <li key={todo._id}>{todo.name}</li>
         ))}
       </ul>
     </div>
