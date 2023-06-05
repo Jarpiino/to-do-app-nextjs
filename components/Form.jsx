@@ -30,6 +30,7 @@ const Form = (props) => {
         autoComplete="off"
         value={name}
         onChange={handleChange}
+        placeholder="Play sum league..."
       />
       <button
         onClick={handleSubmit}
