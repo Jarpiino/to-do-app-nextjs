@@ -34,7 +34,9 @@ export default function Home() {
     <div>
       <ul>
         {todos.map((todo) => (
-          <li key={todo._id}>{todo.name}</li>
+          <li key={todo._id}>
+            {todo.name} {todo.completed.toString()}
+          </li>
         ))}
       </ul>
     </div>
