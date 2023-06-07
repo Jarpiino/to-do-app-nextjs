@@ -2,6 +2,24 @@
 import { useState } from "react";
 
 const Form = (props) => {
+  const placeholders = [
+    {
+      namePlaceholder: "Play sum league...",
+    },
+    {
+      namePlaceholder: "Watch a movie...",
+    },
+    {
+      namePlaceholder: "Wash dishes...",
+    },
+  ];
+  const randomPlaceholder = () => {
+    const len = placeholders.length;
+    let placeholder = Math.floor(Math.random() * len);
+    placeholder = placeholders[placeholder].namePlaceholder;
+    return placeholder;
+  };
+
   const [name, setName] = useState("");
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -30,7 +48,7 @@ const Form = (props) => {
         autoComplete="off"
         value={name}
         onChange={handleChange}
-        placeholder="Play sum league..."
+        placeholder={randomPlaceholder()}
       />
       <button
         onClick={handleSubmit}
