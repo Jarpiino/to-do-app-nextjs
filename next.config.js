@@ -1,4 +1,11 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {}
+const nextConfig = {
+  experimental: {
+    serverComponentsExternalPackages: ["mongoose"],
+  },
+  //   experiments: {
+  //     topLevelAwait: true,
+  //   },
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

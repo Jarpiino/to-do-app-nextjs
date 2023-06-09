@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import { nanoid } from "nanoid";
 import Todo from "@components/Todo";
 import Form from "@components/Form";
+import Spinner from "@components/Spinner";
 import FilterButton from "@components/FilterButton";
 import { useSession } from "next-auth/react";
 import useSWR from "swr";
@@ -31,29 +32,8 @@ const FILTER_NAMES = Object.keys(FILTER_MAP);
 function Home() {
   const session = useSession();
   const [tasks, setTasks] = useState(DATA);
+  const [todos, setTodos] = useState([]);
   const [filter, setFilter] = useState("All");
-
-  // const [andmed, setAndmed] = useState([]);
-  // const [error, setError] = useState(false);
-  // const [isLoading, setIsLoading] = useState(false);
-  // useEffect(() => {
-  //   const getData = async () => {
-  //     setIsLoading(true);
-  //     const res = await fetch("https://jsonplaceholder.typicode.com/posts");
-  //     // The return value is *not* serialized
-  //     // You can return Date, Map, Set, etc.
-
-  //     // Recommendation: handle errors
-  //     if (!res.ok) {
-  //       setError(true);
-  //     }
-  //     const data = res.json();
-  //     setAndmed(data);
-  //     setIsLoading(false);
-  //   };
-  //   getData();
-  // }, []);
-  // console.log(andmed);
 
   // !LOCAL STORAGE USE EFFECTS
   // useEffect(() => {
@@ -121,18 +101,34 @@ function Home() {
     "http://localhost:3000/api/todos",
     fetcher
   );
-
-  if (error) return <div>failed to load</div>;
-  if (isLoading) return <div>loading...</div>;
   console.log(data);
-  const data2 = Object.entries(data)[0][1];
+  if (error) return <div>failed to load</div>;
+  if (isLoading)
+    return (
+      <div className="todoapp stack-large">
+        <h1 className="text-6xl">Todo List</h1>
+        <Form addTask={addTask} />
+        <div className="filters btn-group stack-exception">{filterList}</div>
+        <h2 id="list-heading" tabIndex="-1" ref={listHeadingRef}>
+          {/* {headingText} */}
+        </h2>
+        <div className="flex items-center justify-center h-60">
+          <Spinner />
+        </div>
+      </div>
+    );
+  console.log(data);
+  // let rawTodo = data[0]
+  // let rawTodo = Object.entries(data)[0][1].todos;
+  // rawTodo = Object.entries(rawTodo).todos;
+  // console.log(rawTodo);
 
-  const taskList = data2
+  const taskList = data
     .filter(FILTER_MAP[filter])
     .map((task) => (
       <Todo
         id={task._id}
-        name={task.name}
+        name={task.todo}
         completed={task.completed}
         key={task._id}
         toggleTaskCompleted={toggleTaskCompleted}
@@ -165,7 +161,6 @@ function Home() {
       <h2 id="list-heading" tabIndex="-1" ref={listHeadingRef}>
         {headingText}
       </h2>
-
       <ul
         className="todo-list stack-large stack-exception"
         aria-labelledby="list-heading"

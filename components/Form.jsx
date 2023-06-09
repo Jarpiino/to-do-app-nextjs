@@ -21,15 +21,34 @@ const Form = (props) => {
   };
 
   const [name, setName] = useState("");
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (name) {
-      props.addTask(name);
-      setName("");
-    } else {
-      alert("Please enter something");
+  console.log(name);
+  const handleSubmit = async (e) => {
+    try {
+      e.preventDefault();
+
+      const response = await fetch("http://localhost:3000/api/todos", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          todo: name,
+          completed: false,
+        }),
+      });
+    } catch (e) {
+      console.log(e);
     }
   };
+
+  // !! old method with state
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   if (name) {
+  //     props.addTask(name);
+  //     setName("");
+  //   } else {
+  //     alert("Please enter something");
+  //   }
+  // };
   const handleChange = (e) => {
     setName(e.target.value);
   };
