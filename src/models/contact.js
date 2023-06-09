@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const todSchema = new mongoose.Schema(
+const contactSchema = new mongoose.Schema(
   {
     username: {
       type: String,
@@ -24,6 +24,7 @@ const todSchema = new mongoose.Schema(
   }
 );
 
-const Tod = mongoose.models.Tod || mongoose.model("Tod", todSchema);
+const Contact =
+  mongoose.models.Contact || mongoose.model("Contact", contactSchema);
 
-export default Tod;
+export default Contact;

@@ -13,6 +13,7 @@ function usePrevious(value) {
 const Todo = (props) => {
   const [isEditing, setIsEditing] = useState(false);
   const [newName, setNewName] = useState("");
+  const [completedState, setCompletedState] = useState(props.completed);
 
   const wasEditing = usePrevious(isEditing);
 
@@ -48,7 +49,6 @@ const Todo = (props) => {
           className="todo-text"
           type="text"
           onChange={handleChange}
-          //   value={newName}
           ref={editFieldRef}
         />
       </div>
@@ -68,7 +68,13 @@ const Todo = (props) => {
           id={props.id}
           type="checkbox"
           defaultChecked={props.completed}
-          onChange={() => props.toggleTaskCompleted(props.id)}
+          onChange={() =>
+            props.toggleTaskCompleted(
+              props.id,
+              completedState,
+              setCompletedState
+            )
+          }
         />
         <label className="todo-label" htmlFor={props.id}>
           {props.name}

@@ -1,7 +1,9 @@
 "use client";
 import { useState } from "react";
+import { useSWRConfig } from "swr";
 
-const Form = (props) => {
+const Form = (props, { func }) => {
+  const { mutate } = useSWRConfig();
   const placeholders = [
     {
       namePlaceholder: "Play sum league...",
@@ -21,23 +23,36 @@ const Form = (props) => {
   };
 
   const [name, setName] = useState("");
-  console.log(name);
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
-
-      const response = await fetch("http://localhost:3000/api/todos", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          todo: name,
-          completed: false,
-        }),
-      });
+      if (name) {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_URL + "/api/todo"}`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              userid: "user1",
+              todoname: name,
+              completed: false,
+            }),
+          }
+        );
+      } else {
+        alert("Please enter something");
+      }
     } catch (e) {
       console.log(e);
     }
+
+    mutate(`${process.env.NEXT_PUBLIC_URL + "/api/todo"}`);
   };
+
+  // body: JSON.stringify({
+  //   todo: name,
+  //   completed: false,
+  // }),
 
   // !! old method with state
   // const handleSubmit = (e) => {
