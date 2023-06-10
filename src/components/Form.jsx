@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useSWRConfig } from "swr";
 
-const Form = (props, { func }) => {
+const Form = ({ sessionEmail }) => {
   const { mutate } = useSWRConfig();
   const placeholders = [
     {
@@ -21,7 +21,6 @@ const Form = (props, { func }) => {
     placeholder = placeholders[placeholder].namePlaceholder;
     return placeholder;
   };
-
   const [name, setName] = useState("");
   const handleSubmit = async (e) => {
     try {
@@ -33,11 +32,15 @@ const Form = (props, { func }) => {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              userid: "user1",
+              userid: sessionEmail(),
               todoname: name,
               completed: false,
             }),
           }
+        );
+        setName("");
+        mutate(
+          `${process.env.NEXT_PUBLIC_URL + "/api/todo/?id=" + sessionEmail()}`
         );
       } else {
         alert("Please enter something");
@@ -45,8 +48,6 @@ const Form = (props, { func }) => {
     } catch (e) {
       console.log(e);
     }
-
-    mutate(`${process.env.NEXT_PUBLIC_URL + "/api/todo"}`);
   };
 
   // body: JSON.stringify({

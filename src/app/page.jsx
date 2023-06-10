@@ -29,6 +29,21 @@ const FILTER_NAMES = Object.keys(FILTER_MAP);
 function Home() {
   const { mutate } = useSWRConfig();
   const session = useSession();
+
+  const sessionEmail = () => {
+    console.log(session.data);
+    if (session.data === undefined) {
+      const email = "";
+      return email;
+    } else if (session.data === null) {
+      const email = "";
+      return email;
+    } else {
+      const email = session.data.user.email;
+      return email;
+    }
+  };
+
   const [tasks, setTasks] = useState([]);
   const [filter, setFilter] = useState("All");
 
@@ -47,7 +62,6 @@ function Home() {
     setTasks([...tasks, newTask]);
   };
   const toggleTaskCompleted = async (id, completedState, setCompletedState) => {
-    console.log(completedState);
     if (completedState === false) {
       try {
         {
@@ -86,9 +100,10 @@ function Home() {
       }
     }
     setCompletedState((prev) => (prev === false ? true : false));
-    console.log("done");
 
-    mutate(`${process.env.NEXT_PUBLIC_URL + "/api/todo"}`);
+    mutate(
+      `${process.env.NEXT_PUBLIC_URL + "/api/todo/?id=" + sessionEmail()}`
+    );
   };
   // const toggleTaskCompleted = (id) => {
   //   const updatedTasks = tasks.map((task) => {
@@ -117,7 +132,9 @@ function Home() {
           }
         );
       }
-      mutate(`${process.env.NEXT_PUBLIC_URL + "/api/todo"}`);
+      mutate(
+        `${process.env.NEXT_PUBLIC_URL + "/api/todo/?id=" + sessionEmail()}`
+      );
     } catch (e) {
       console.log(e);
     }
@@ -176,12 +193,12 @@ function Home() {
     }
   }, [tasks.length, prevTaskLength]);
 
-  const fetcher = (...args) => fetch(...args).then((res) => res.json());
+  const fetcher = (...args) => fetch(...args, {}).then((res) => res.json());
 
   preload(`${process.env.NEXT_PUBLIC_URL + "/api/todo"}`, fetcher);
 
   const { data, error, isLoading } = useSWR(
-    `${process.env.NEXT_PUBLIC_URL + "/api/todo"}`,
+    `${process.env.NEXT_PUBLIC_URL + "/api/todo/?id=" + sessionEmail()}`,
     fetcher
   );
 
@@ -272,13 +289,17 @@ function Home() {
   };
   return (
     <div className="todoapp stack-large">
-      {session.status === "authenticated" && (
-        <button onClick={signOut}> Logout</button>
-      )}
-      {session.status === "unauthenticated" && <Link href="/login">Login</Link>}
+      <div className="flex justify-between w-full max-w-5xl px-0 m-0">
+        {session.status === "authenticated" && (
+          <button onClick={signOut}> Logout</button>
+        )}
+        {session.status === "unauthenticated" && (
+          <Link href="/login">Login</Link>
+        )}
+        <DarkModeToggle />
+      </div>
       <h1 className="text-6xl">{kasutajanimi()}Todo List</h1>
-      <DarkModeToggle />
-      <Form addTask={addTask} />
+      <Form addTask={addTask} sessionEmail={sessionEmail} />
       <div className="filters btn-group stack-exception">{filterList}</div>
       <h2 id="list-heading" tabIndex="-1" ref={listHeadingRef}>
         {headingText}
