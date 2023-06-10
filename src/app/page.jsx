@@ -169,7 +169,9 @@ function Home() {
           }
         );
       }
-      mutate(`${process.env.NEXT_PUBLIC_URL + "/api/todo"}`);
+      mutate(
+        `${process.env.NEXT_PUBLIC_URL + "/api/todo/?id=" + sessionEmail()}`
+      );
     } catch (e) {
       console.log(e);
     }
