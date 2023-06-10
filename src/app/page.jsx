@@ -1,12 +1,14 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
+import { useSession, signOut } from "next-auth/react";
 import { nanoid } from "nanoid";
+import Link from "next/link";
 import Todo from "@components/Todo";
 import Form from "@components/Form";
 import Spinner from "@components/Spinner";
 import DarkModeToggle from "@components/Darkmode/DarkModeToggle";
 import FilterButton from "@components/FilterButton";
-import { useSession } from "next-auth/react";
+// import { useSession } from "next-auth/react";
 import useSWR, { preload, useSWRConfig } from "swr";
 
 function usePrevious(value) {
@@ -120,6 +122,7 @@ function Home() {
       console.log(e);
     }
   };
+
   // ! OLD DELETE
   // const deleteTask = (id) => {
   //   const remainingTasks = tasks.filter((task) => id !== task.id);
@@ -182,6 +185,25 @@ function Home() {
     fetcher
   );
 
+  // ! SWR POST EXAMPLE
+  // const fetcher = (...args) =>
+  //   fetch(...args, {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify({
+  //       userid: session.data.user.email,
+  //       todoname: "fdsfysadf",
+  //       completed: false,
+  //     }),
+  //   }).then((res) => res.json());
+
+  // preload(`${process.env.NEXT_PUBLIC_URL + "/api/todo"}`, fetcher);
+
+  // const { data, error, isLoading } = useSWR(
+  //   `${process.env.NEXT_PUBLIC_URL + "/api/todo"}`,
+  //   fetcher
+  // );
+
   if (error)
     return (
       <div className="todoapp stack-large">
@@ -238,10 +260,23 @@ function Home() {
   // console.log(
   //   Object.entries(data2)[0][1].map((person) => console.log(person.plot))
   // );
-
+  const kasutajanimi = () => {
+    let kasutaja =
+      session.status === "authenticated" &&
+      session.data.user.name.split(/\s+/).slice(0, 1).join(" ");
+    if (kasutaja === false) {
+      kasutaja = "";
+      return kasutaja;
+    } else kasutaja = kasutaja + "'s ";
+    return kasutaja;
+  };
   return (
     <div className="todoapp stack-large">
-      <h1 className="text-6xl">Todo List</h1>
+      {session.status === "authenticated" && (
+        <button onClick={signOut}> Logout</button>
+      )}
+      {session.status === "unauthenticated" && <Link href="/login">Login</Link>}
+      <h1 className="text-6xl">{kasutajanimi()}Todo List</h1>
       <DarkModeToggle />
       <Form addTask={addTask} />
       <div className="filters btn-group stack-exception">{filterList}</div>

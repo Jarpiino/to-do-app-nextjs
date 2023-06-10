@@ -47,6 +47,7 @@ export async function POST(req, res) {
 // !!!GET V
 export const GET = async (request) => {
   try {
+    // console.log(session.data.user.name);
     await dbConnect();
     const todo = await Todo.find();
 

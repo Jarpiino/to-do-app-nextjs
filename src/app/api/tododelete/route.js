@@ -3,19 +3,13 @@ import dbConnect from "@/utils/dbConnect";
 import Todo from "@/models/todo";
 import { NextResponse } from "next/server";
 
-export async function PUT(req, res) {
+export async function POST(req, res) {
   try {
     const body = await req.json();
-    console.log(body.todoname);
-    const filter = { _id: body._id };
-    const update = { completed: body.completed };
     await dbConnect();
-
-    // console.log(body);
-    await Todo.findOneAndUpdate(filter, update);
-
+    await Todo.deleteOne(body);
     return NextResponse.json(
-      { message: "Message sent successfully!" },
+      { message: "Todo deleted successfully!" },
       { status: 200 }
     );
   } catch (e) {
