@@ -33,10 +33,10 @@ function Home() {
   const sessionEmail = () => {
     console.log(session.data);
     if (session.data === undefined) {
-      const email = "";
+      const email = "guest";
       return email;
     } else if (session.data === null) {
-      const email = "";
+      const email = "guest";
       return email;
     } else {
       const email = session.data.user.email;
